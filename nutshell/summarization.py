@@ -1,6 +1,10 @@
+from nutshell.preprocessing.preprocessor import BasePreProcessor
+
+
 class Nutshell:
-    def __init__(self):
-        pass
+    def __init__(self, corpus, preprocessor: BasePreProcessor):
+        self.corpus = corpus
+        self.preprocessor = preprocessor
 
     def summarise(self, ratio=0.5):
         """
