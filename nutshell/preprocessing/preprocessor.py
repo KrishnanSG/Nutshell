@@ -7,9 +7,9 @@ from nutshell.preprocessing.tokenizer import BaseTokenizer
 class BasePreProcessor(ABC):
 
     def __init__(self, corpus, tokenizer: BaseTokenizer, cleaner: BaseCleaner):
-        self.__corpus = corpus
-        self.__cleaner = cleaner
-        self.__tokenizer = tokenizer
+        self._corpus = corpus
+        self._cleaner = cleaner
+        self._tokenizer = tokenizer
 
     @abstractmethod
     def preprocess(self, *args):
