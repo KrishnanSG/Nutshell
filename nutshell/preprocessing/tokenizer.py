@@ -18,9 +18,9 @@ class Token:
 
     def get_number_of_tokens(self, raw=True) -> Union[List, int]:
         """
-        Returns the number of tokens per sentence
-        :param raw: If false returns the total number of tokens
-        :return: List of tokens per sentence (1*n) -> n number of sentences
+        Returns the number of __tokens per sentence
+        :param raw: If false returns the total number of __tokens
+        :return: List of __tokens per sentence (1*n) -> n number of sentences
         """
         count = list(map(len, self.get_sentences()))
         return count if raw else sum(count)
