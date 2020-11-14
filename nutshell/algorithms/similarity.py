@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from collections import defaultdict
 from math import log
 from pprint import pprint
 from typing import Dict
+
+import numpy as np
 
 from nutshell.preprocessing.tokenizer import Token
 
@@ -66,32 +67,15 @@ class BM25Plus(BaseSimilarityAlgo):
                     1 - self.__b + self.__b * len(doc1) / self.__avg_doc_len))
         return score
 
-    def similarity_matrix(self) -> Dict[int, int]:
+    def similarity_matrix(self) -> np.ndarray:
         """
         Calculates the similarity matrix for the docs
         :return: similarity matrix
         """
-        matrix = defaultdict(dict)
+        n = self.__tokens.get_number_of_sentences()
+        matrix = np.zeros((n, n))
         for i, doc1 in enumerate(self.__tokens.get_sentences()):
             for j, doc2 in enumerate(self.__tokens.get_sentences()):
-                matrix[i][j] = self._calculate_similarity_score(doc1, doc2)
-        return dict(matrix)
-
-
-if __name__ == '__main__':
-    """
-    Example corpus and BM25Plus result
-    """
-    corpus = [
-        ["Hello", "there", "good", "man!"],
-        ["It", "is", "quite", "windy", "in", "London"],
-        ["Hello", "How", "is", "the", "weather", "today?"]
-    ]
-    t = Token(corpus)
-    bm25plus = BM25Plus(t)
-
-    print("IDF")
-    pprint(bm25plus.calculate_idf())
-
-    print("Similarity Matrix")
-    pprint(bm25plus.similarity_matrix())
+                if i != j:
+                    matrix[i][j] = self._calculate_similarity_score(doc1, doc2)
+        return matrix
