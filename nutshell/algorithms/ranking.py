@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from heapq import nlargest
 from math import ceil
 from pprint import pprint
 from typing import Dict, Any, List
@@ -6,6 +7,7 @@ from typing import Dict, Any, List
 import networkx as nx
 import numpy as np
 
+from nutshell.algorithms.information_retrieval import ClassicalIR
 from nutshell.algorithms.similarity import BM25Plus
 from nutshell.preprocessing.tokenizer import Token
 
@@ -42,7 +44,7 @@ class TextRank(BaseRanker):
         return nx.pagerank_numpy(graph)
 
     @staticmethod
-    def get_top(scores, tokens: Token, reduction_ratio=0.70, preserve_order=False):
+    def get_top(scores: dict, tokens: Token, reduction_ratio=0.70, preserve_order=False):
         """
         Returns the top n doc/sentences based on the reduction_ration
         :param scores: Ranking scores, computed using the ranking algorithm
@@ -52,12 +54,13 @@ class TextRank(BaseRanker):
         :param preserve_order: If True, then sentence order is preserved
         :return:
         """
+        n = ceil(tokens.get_number_of_sentences() * (1 - reduction_ratio))
         if preserve_order:
-            # TODO: Add logic to preserve order and return the sentences
-            pass
+            # Return the sentences as it was in the original corpus without disturbing the order
+            threshold = nlargest(n, scores.items(), key=lambda x: x[1])[-1][1]
+            return [(scores[idx], sen) for idx, sen in enumerate(tokens.get_sentences()) if scores[idx] >= threshold]
         else:
             sentences = list(sorted(((scores[i], s) for i, s in enumerate(tokens.get_sentences())), reverse=True))
-            n = ceil(tokens.get_number_of_sentences() * reduction_ratio)
             return sentences[:n]
 
 
@@ -68,7 +71,9 @@ if __name__ == '__main__':
         ["Hello", "How", "is", "the", "weather", "today?"],
     ]
     tokens = Token(corpus)
-    bm25plus = BM25Plus(tokens)
+
+    idf = ClassicalIR.calculate_idf(tokens)
+    bm25plus = BM25Plus(tokens, idf)
 
     print("Similarity Matrix")
     mat = bm25plus.similarity_matrix()
@@ -79,4 +84,4 @@ if __name__ == '__main__':
 
     print("Ranking Scores")
     print(scores)
-    pprint(tr.get_top(scores, tokens, reduction_ratio=0.5))
+    pprint(tr.get_top(scores, tokens, reduction_ratio=0.5, preserve_order=True))
