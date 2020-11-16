@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Union, Iterable
+
+import nltk
 
 
 class Token:
@@ -40,10 +42,32 @@ class BaseTokenizer(ABC):
 
     @staticmethod
     @abstractmethod
-    def tokenize(corpus, *args) -> Token:
+    def tokenize_into_words(*args) -> Iterable[str]:
         pass
 
     @staticmethod
     @abstractmethod
-    def tokenize_into_sentences(corpus, *args) -> Token:
+    def tokenize_into_sentences(*args) -> Iterable[str]:
         pass
+
+    @staticmethod
+    @abstractmethod
+    def tokenize(*args) -> Token:
+        pass
+
+
+class NLTKTokenizer(BaseTokenizer):
+    @staticmethod
+    def tokenize_into_words(sentence: str) -> List[str]:
+        return nltk.word_tokenize(sentence)
+
+    @staticmethod
+    def tokenize_into_sentences(corpus: str) -> List[str]:
+        return nltk.sent_tokenize(corpus)
+
+    @staticmethod
+    def tokenize(corpus: str) -> Token:
+        """Tokenizes the given corpus into sentences and words"""
+        sentences = NLTKTokenizer.tokenize_into_sentences(corpus)
+        raw_tokens = list(map(NLTKTokenizer.tokenize_into_words, sentences))
+        return Token(raw_tokens)
