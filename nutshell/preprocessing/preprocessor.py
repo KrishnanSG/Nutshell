@@ -4,13 +4,17 @@ from nutshell.preprocessing.cleaner import BaseCleaner
 from nutshell.preprocessing.tokenizer import BaseTokenizer
 
 
-class BasePreProcessor(ABC):
+class TextPreProcessor():
 
     def __init__(self, corpus, tokenizer: BaseTokenizer, cleaner: BaseCleaner):
         self._corpus = corpus
         self._cleaner = cleaner
         self._tokenizer = tokenizer
 
-    @abstractmethod
     def preprocess(self, *args):
-        pass
+        
+        original = self._tokenizer.tokenize(self._corpus)
+        return {'original' : original, 'cleaned' : self._cleaner.clean(original) }
+
+        
+        

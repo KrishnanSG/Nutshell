@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Union, Iterable
-
 import nltk
-
 
 class Token:
     def __init__(self, raw_tokens: List[List[str]]):
