@@ -1,14 +1,11 @@
 from abc import abstractmethod, ABC
 from heapq import nlargest
 from math import ceil
-from pprint import pprint
 from typing import Dict, Any, List
 
 import networkx as nx
 import numpy as np
 
-from nutshell.algorithms.information_retrieval import ClassicalIR
-from nutshell.algorithms.similarity import BM25Plus
 from nutshell.preprocessing.tokenizer import Token
 
 
@@ -51,7 +48,11 @@ class TextRank(BaseRanker):
         :param preserve_order: If True, then sentence order is preserved
         :return: Top n sentences
         """
-        n = ceil(tokens.get_number_of_sentences() * (1 - reduction_ratio))
+        p = tokens.get_number_of_sentences()
+        n = ceil(p * (1 - reduction_ratio))
+        print(f"\n --- Stats ---\nNumber of sentences before summarization: {p}\n"
+              f"Number of sentences after summarization: {int(n)}")
+
         if preserve_order:
             # Return the sentences as it was in the original corpus without disturbing the order
             threshold = nlargest(n, scores.items(), key=lambda x: x[1])[-1][1]
@@ -59,26 +60,3 @@ class TextRank(BaseRanker):
         else:
             sentences = list(sorted(((scores[i], s) for i, s in enumerate(tokens.get_sentences())), reverse=True))
             return sentences[:n]
-
-
-if __name__ == '__main__':
-    corpus = [
-        ["Hello", "there", "good", "man!"],
-        ["It", "is", "quite", "windy", "in", "London"],
-        ["Hello", "How", "is", "the", "weather", "today?"],
-    ]
-    tokens = Token(corpus)
-
-    idf = ClassicalIR.calculate_idf(tokens)
-    bm25plus = BM25Plus(tokens, idf)
-
-    print("Similarity Matrix")
-    mat = bm25plus.similarity_matrix()
-    pprint(mat)
-
-    tr = TextRank(mat)
-    scores = tr.get_ranking_scores()
-
-    print("Ranking Scores")
-    print(scores)
-    pprint(tr.get_top(scores, tokens, reduction_ratio=0.5, preserve_order=True))

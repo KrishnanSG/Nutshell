@@ -8,6 +8,8 @@ from nutshell.preprocessing.tokenizer import NLTKTokenizer
 from nutshell.utils import load_corpus, construct_sentences_from_ranking
 
 if __name__ == '__main__':
+
+    # Example
     corpus = load_corpus('D:\Programming\Python\Text-Summarizer\input.txt')
     print("\n --- Original Text ---\n")
     print(corpus)
@@ -26,6 +28,6 @@ if __name__ == '__main__':
     # Text Keyword Extraction
     preprocessor = TextPreProcessor(tokenizer, NLTKCleaner(skip_stemming=True))
     keyword_extractor = KeywordExtractor(preprocessor, ir)
-    keywords = keyword_extractor.extract_keywords(corpus, count=5, raw=False)
+    keywords = keyword_extractor.extract_keywords(corpus, count=10, raw=False)
     print("\n --- Keywords ---\n")
     print(keywords)

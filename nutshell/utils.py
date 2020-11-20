@@ -4,7 +4,7 @@ from typing import Tuple, List
 
 def load_corpus(file_path):
     corpus_file = os.path.abspath(file_path)
-    with open(corpus_file) as f:
+    with open(corpus_file, encoding='utf-8') as f:
         corpus = f.read()
     return corpus
 
