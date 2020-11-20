@@ -1,27 +1,31 @@
-from nutshell.preprocessing.tokenizer import NLTKTokenizer
+from nutshell.algorithms.information_retrieval import ClassicalIR
+from nutshell.algorithms.ranking import TextRank
+from nutshell.algorithms.similarity import BM25Plus
+from nutshell.model import Summarizer, KeywordExtractor
 from nutshell.preprocessing.cleaner import NLTKCleaner
 from nutshell.preprocessing.preprocessor import TextPreProcessor
+from nutshell.preprocessing.tokenizer import NLTKTokenizer
+from nutshell.utils import load_corpus, construct_sentences_from_ranking
 
-corpus = """One morning, when Gregor Samsa woke from troubled dreams, he found
-himself transformed in his bed into a horrible vermin.  He lay on
-his armour-like back, and if he lifted his head a little he could
-see his brown belly, slightly domed and divided by arches into stiff
-sections.  The bedding was hardly able to cover it and seemed ready
-to slide off any moment.  His many legs, pitifully thin compared
-with the size of the rest of him, waved about helplessly as he
-looked.
-"""
+if __name__ == '__main__':
+    corpus = load_corpus('D:\Programming\Python\Text-Summarizer\input.txt')
+    print("\n --- Original Text ---\n")
+    print(corpus)
+    tokenizer = NLTKTokenizer()
+    preprocessor = TextPreProcessor(tokenizer, NLTKCleaner())
+    similarity_algorithm = BM25Plus()
+    ranker = TextRank()
+    ir = ClassicalIR()
 
-if __name__ == "__main__":
-    obj = TextPreProcessor(corpus, NLTKTokenizer, NLTKCleaner)
-    op = obj.preprocess()
+    # Text Summarization
+    model = Summarizer(preprocessor, similarity_algorithm, ranker, ir)
+    summarised_content = model.summarise(corpus, reduction_ratio=0.70, preserve_order=True)
+    print("\n --- Summarized Text ---\n")
+    print(construct_sentences_from_ranking(summarised_content))
 
-    print('Original sentences')
-    for i in op['original'].get_sentences():
-        print( i )
-    print('\n')
-
-    print('After cleaning (lexicalisation): ')
-    for i in op['cleaned'].get_sentences():
-        print(  i )
-    print('\n')
+    # Text Keyword Extraction
+    preprocessor = TextPreProcessor(tokenizer, NLTKCleaner(skip_stemming=True))
+    keyword_extractor = KeywordExtractor(preprocessor, ir)
+    keywords = keyword_extractor.extract_keywords(corpus, count=5, raw=False)
+    print("\n --- Keywords ---\n")
+    print(keywords)

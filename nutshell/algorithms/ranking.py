@@ -18,11 +18,11 @@ class BaseRanker(ABC):
     def _ranking_algorithm(self, *args, **kwargs) -> Dict[Any, float]:
         pass
 
-    def get_ranking_scores(self) -> Dict[Any, float]:
+    def get_ranking_scores(self, similarity_matrix: np.ndarray) -> Dict[Any, float]:
         """
         Invokes the ranking algorithms and returns the rankings scores for each doc/sentence
         """
-        return self._ranking_algorithm()
+        return self._ranking_algorithm(similarity_matrix)
 
     @staticmethod
     @abstractmethod
@@ -32,15 +32,12 @@ class BaseRanker(ABC):
 
 class TextRank(BaseRanker):
 
-    def __init__(self, similarity_matrix: np.ndarray):
-        self.__similarity_matrix = similarity_matrix
-
-    def _ranking_algorithm(self):
+    def _ranking_algorithm(self, similarity_matrix: np.ndarray):
         """
         Calculates doc ranking using pagerank algorithm
         :return: Ranking scores for each doc/sentence
         """
-        graph = nx.MultiDiGraph(self.__similarity_matrix)
+        graph = nx.MultiDiGraph(similarity_matrix)
         return nx.pagerank_numpy(graph)
 
     @staticmethod
@@ -52,7 +49,7 @@ class TextRank(BaseRanker):
         :param reduction_ratio: Reduction ratio expected for the output text. i.e if ratio=0.5 then half the number
                 of sentence are returned
         :param preserve_order: If True, then sentence order is preserved
-        :return:
+        :return: Top n sentences
         """
         n = ceil(tokens.get_number_of_sentences() * (1 - reduction_ratio))
         if preserve_order:

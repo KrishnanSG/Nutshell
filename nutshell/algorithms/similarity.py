@@ -12,7 +12,7 @@ class BaseSimilarityAlgo(ABC):
         pass
 
     @abstractmethod
-    def similarity_matrix(self, *args) -> Dict[int, int]:
+    def similarity_matrix(self, *args) -> np.ndarray:
         pass
 
 
@@ -21,10 +21,9 @@ class BM25Plus(BaseSimilarityAlgo):
     BM25Plus is an algorithm to find similarity b/w 2 docs/sentences
     """
 
-    def __init__(self, tokens: Token, idf: Dict[str, float], k1: float = 1.2, b: float = 0.75):
-        self.__tokens = tokens
-        self.__idf = idf
-        self.__avg_doc_len = self.__tokens.get_avg_token_per_sentence()
+    def __init__(self, k1: float = 1.2, b: float = 0.75):
+        self.__idf = None
+        self.__avg_doc_len: float = 0
 
         # Algorithm specific parameters
         self.__k1 = k1
@@ -44,15 +43,17 @@ class BM25Plus(BaseSimilarityAlgo):
                     1 - self.__b + self.__b * len(doc1) / self.__avg_doc_len))
         return score
 
-    def similarity_matrix(self) -> np.ndarray:
+    def similarity_matrix(self, tokens: Token, idf: Dict[str, float]) -> np.ndarray:
         """
         Calculates the similarity matrix for the docs
         :return: similarity matrix
         """
-        n = self.__tokens.get_number_of_sentences()
+        self.__avg_doc_len = tokens.get_avg_token_per_sentence()
+        self.__idf = idf
+        n = tokens.get_number_of_sentences()
         matrix = np.zeros((n, n))
-        for i, doc1 in enumerate(self.__tokens.get_sentences()):
-            for j, doc2 in enumerate(self.__tokens.get_sentences()):
+        for i, doc1 in enumerate(tokens.get_sentences()):
+            for j, doc2 in enumerate(tokens.get_sentences()):
                 if i != j:
                     matrix[i][j] = self._calculate_similarity_score(doc1, doc2)
         return matrix
