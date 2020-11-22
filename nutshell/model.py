@@ -43,7 +43,7 @@ class KeywordExtractor:
         self.preprocessor = preprocessor
         self.ir = ir
 
-    def extract_keywords(self, corpus, count=5, raw=False, ):
+    def extract_keywords(self, corpus, count=5, raw=False):
         original_token, tokens = self.preprocessor.preprocess(corpus)
         tf = self.ir.calculate_tf(tokens)
         idf = self.ir.calculate_idf(tokens)
