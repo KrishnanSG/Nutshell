@@ -1,4 +1,8 @@
 # Nutshell
+[![CodeFactor](https://www.codefactor.io/repository/github/krishnansg/nutshell/badge)](https://www.codefactor.io/repository/github/krishnansg/nutshell) 
+[![Downloads](https://static.pepy.tech/personalized-badge/pynutshell?period=total&units=international_system&left_color=black&right_color=orange&left_text=downloads)](https://pepy.tech/project/pynutshell) 
+[![Downloads](https://static.pepy.tech/personalized-badge/pynutshell?period=week&units=international_system&left_color=black&right_color=blue&left_text=downloads/week)](https://pepy.tech/project/pynutshell)
+[![PyPI version](https://badge.fury.io/py/pynutshell.svg)](https://pypi.org/project/pynutshell)
 
 A simple to use yet robust python library containing tools to perform:
 
