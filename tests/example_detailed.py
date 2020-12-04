@@ -7,7 +7,7 @@ from nutshell.preprocessing.preprocessor import TextPreProcessor
 from nutshell.preprocessing.tokenizer import NLTKTokenizer
 from nutshell.utils import load_corpus, construct_sentences_from_ranking
 
-corpus = load_corpus('input.txt')
+corpus = load_corpus('sample.txt')
 print("\n --- Original Text ---\n")
 print(corpus)
 
@@ -19,7 +19,7 @@ ir = ClassicalIR()
 # Text Summarization
 preprocessor = TextPreProcessor(tokenizer, NLTKCleaner())
 model = Summarizer(preprocessor, similarity_algorithm, ranker, ir)
-summarised_content = model.summarise(corpus, reduction_ratio=0.70, preserve_order=True)
+summarised_content = model.summarise(corpus, reduction_ratio=0.80, preserve_order=False)
 
 print("\n --- Summarized Text ---\n")
 print(construct_sentences_from_ranking(summarised_content))
@@ -27,7 +27,7 @@ print(construct_sentences_from_ranking(summarised_content))
 # Text Keyword Extraction
 preprocessor = TextPreProcessor(tokenizer, NLTKCleaner(skip_stemming=True))
 keyword_extractor = KeywordExtractor(preprocessor, ClassicalIR())
-keywords = keyword_extractor.extract_keywords(corpus, count=10, raw=False)
+keywords = keyword_extractor.extract_keywords(corpus, count=15, raw=False)
 
 print("\n --- Keywords ---\n")
 print(keywords)
