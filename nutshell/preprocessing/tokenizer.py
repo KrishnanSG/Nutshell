@@ -11,8 +11,7 @@ class Token:
     def get_sentence(self, sentence_id) -> List:
         if 0 <= sentence_id <= len(self.__raw_tokens) - 1:
             return self.__raw_tokens[sentence_id]
-        else:
-            raise Exception(f"Invalid sentence Id. Valid sentence ids are of range [0, {len(self.__raw_tokens) - 1}]")
+        raise Exception(f"Invalid sentence Id. Valid sentence ids are of range [0, {len(self.__raw_tokens) - 1}]")
 
     def get_sentences(self):
         for sentence in self.__raw_tokens:

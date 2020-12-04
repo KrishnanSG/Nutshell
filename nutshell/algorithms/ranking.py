@@ -64,6 +64,6 @@ class TextRank(BaseRanker):
             # Return the sentences as it was in the original corpus without disturbing the order
             threshold = nlargest(n, scores.items(), key=lambda x: x[1])[-1][1]
             return [(scores[idx], sen) for idx, sen in enumerate(tokens.get_sentences()) if scores[idx] >= threshold]
-        else:
-            sentences = list(sorted(((scores[i], s) for i, s in enumerate(tokens.get_sentences())), reverse=True))
-            return sentences[:n]
+
+        sentences = list(sorted(((scores[i], s) for i, s in enumerate(tokens.get_sentences())), reverse=True))
+        return sentences[:n]

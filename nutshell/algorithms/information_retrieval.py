@@ -78,5 +78,3 @@ class ClassicalIR:
                 weight[word] += tf[doc_id][word] * idf[word]
 
         return sorted(weight.items(), key=lambda x: x[1], reverse=True) if order else weight
-
-
