@@ -39,6 +39,9 @@ class BaseTokenizer(ABC):
     """
     Interface for text tokenizers
     """
+    @abstractmethod
+    def __repr__(self):
+        pass
 
     @staticmethod
     @abstractmethod
@@ -57,6 +60,10 @@ class BaseTokenizer(ABC):
 
 
 class NLTKTokenizer(BaseTokenizer):
+
+    def __repr__(self):
+        return f"""NLTKTokenizer()"""
+
     @staticmethod
     def tokenize_into_words(sentence: str) -> List[str]:
         return nltk.word_tokenize(sentence)

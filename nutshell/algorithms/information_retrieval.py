@@ -7,6 +7,9 @@ from nutshell.preprocessing.tokenizer import Token
 
 class ClassicalIR:
 
+    def __repr__(self):
+        return f"ClassicalIR()"
+
     @staticmethod
     def calculate_tf(tokens: Token) -> Dict[str, Dict[str, float]]:
         """

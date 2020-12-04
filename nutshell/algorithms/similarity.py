@@ -8,6 +8,10 @@ from nutshell.preprocessing.tokenizer import Token
 
 class BaseSimilarityAlgo(ABC):
     @abstractmethod
+    def __repr__(self):
+        pass
+
+    @abstractmethod
     def _calculate_similarity_score(self, doc1: list, doc2: list) -> float:
         pass
 
@@ -28,6 +32,9 @@ class BM25Plus(BaseSimilarityAlgo):
         # Algorithm specific parameters
         self.__k1 = k1
         self.__b = b
+
+    def __repr__(self):
+        return f"BM25Plus(k1={self.__k1}, b={self.__b})"
 
     def _calculate_similarity_score(self, doc1: list, doc2: list) -> float:
         """

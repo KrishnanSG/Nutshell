@@ -12,6 +12,10 @@ from nutshell.preprocessing.tokenizer import Token
 class BaseRanker(ABC):
 
     @abstractmethod
+    def __repr__(self):
+        pass
+
+    @abstractmethod
     def _ranking_algorithm(self, *args, **kwargs) -> Dict[Any, float]:
         pass
 
@@ -28,6 +32,9 @@ class BaseRanker(ABC):
 
 
 class TextRank(BaseRanker):
+
+    def __repr__(self):
+        return f"TextRank()"
 
     def _ranking_algorithm(self, similarity_matrix: np.ndarray):
         """
